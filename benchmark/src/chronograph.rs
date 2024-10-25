@@ -1,5 +1,6 @@
 #[cfg(test)]
 mod mock_instant {
+	use std::ops::DerefMut;
 	use std::sync::{LazyLock, Mutex};
 	use std::time::{Duration, Instant};
 
@@ -8,92 +9,176 @@ mod mock_instant {
 	pub(super) static MOCK_DURATION: LazyLock<Duration> = LazyLock::new(|| Duration::from_secs(1));
 
 	pub(super) fn now() -> Instant {
-		todo!()
+		let mut guard = MOCK_INSTANT.lock().unwrap();
+		*(guard.deref_mut()) += *MOCK_DURATION;
+		dbg!(*guard);
+		*guard
 	}
 }
 
 mod instant {
 	use std::time::Instant;
+
+	#[allow(dead_code)]
 	pub(super) fn now() -> Instant {
 		Instant::now()
 	}
 }
 
+use super::chronograph_status::Status;
 #[cfg(not(test))]
 use instant::now;
 #[cfg(test)]
 use mock_instant::now;
 use std::time::{Duration, Instant};
 
-pub enum Status {
-	Reset,
-	Stop,
-	Running,
-}
-
 pub struct Chronograph {
-	start: Option<Instant>,
+	pivot: Option<Instant>,
 	accumulator: Duration,
 }
 
-impl Chronograph {
-	pub fn new() -> Self {
-		todo!()
+impl Default for Chronograph {
+	fn default() -> Self {
+		Self {
+			pivot: None,
+			accumulator: Duration::from_secs(0),
+		}
 	}
+}
 
+impl Chronograph {
 	pub fn start(&mut self) {
-		todo!()
+		if self.pivot.is_none() {
+			self.pivot = Some(now());
+		}
 	}
 
 	pub fn stop(&mut self) {
-		todo!()
+		let current = now();
+
+		if self.pivot.is_some() {
+			let diff = current - self.pivot.unwrap();
+			self.accumulator += diff;
+			self.pivot = None;
+		}
 	}
 
 	pub fn reset(&mut self) {
-		todo!()
+		self.accumulator = Duration::default();
+		self.pivot = None;
 	}
 
 	pub fn restart(&mut self) {
-		todo!()
+		self.pivot = Some(now());
+		self.accumulator = Duration::default();
 	}
 
 	pub fn status(&self) -> Status {
-		todo!()
+		match (self.pivot.is_none(), self.accumulator.is_zero()) {
+			(true, true) => Status::Reset,
+			(true, false) => Status::Stopped,
+			_ => Status::Running,
+		}
 	}
 
 	pub fn elapsed(&self) -> Duration {
-		todo!()
+		let current = now();
+
+		if let Some(piv) = self.pivot {
+			self.accumulator + (current - piv)
+		} else {
+			self.accumulator
+		}
 	}
 }
 
 #[cfg(test)]
 mod tests {
-	use super::mock_instant::{MOCK_DURATION, MOCK_INSTANT};
 	use super::*;
+	use serial_test::serial;
 	use std::time::Duration;
 
+	#[serial]
 	#[test]
-	fn new() {
-		todo!();
+	fn default() {
+		let fixture = Chronograph::default();
+		assert_eq!(fixture.status(), Status::Reset);
+		assert!(fixture.accumulator.is_zero());
+		assert!(fixture.elapsed().is_zero());
+		assert!(fixture.pivot.is_none());
 	}
 
+	#[serial]
 	#[test]
 	fn change_state() {
-		todo!();
+		let mut fixture = Chronograph::default();
+		assert_eq!(fixture.status(), Status::Reset);
+
+		fixture.start();
+		assert_eq!(fixture.status(), Status::Running);
+		let recent = fixture.pivot.unwrap();
+
+		fixture.start();
+		assert_eq!(fixture.status(), Status::Running);
+		assert_eq!(fixture.pivot.unwrap(), recent);
+
+		fixture.stop();
+		assert_eq!(fixture.status(), Status::Stopped);
+		assert!(fixture.pivot.is_none());
+		assert_eq!(fixture.elapsed(), Duration::from_secs(1));
+
+		fixture.reset();
+		assert_eq!(fixture.status(), Status::Reset);
+		assert!(fixture.pivot.is_none());
 	}
 
-	#[test]
-	fn accumulate() {
-		todo!();
-	}
-
-	#[test]
-	fn reset() {
-		todo!();
-	}
-
+	#[serial]
 	#[test]
 	fn restart() {
-		todo!();
+		let mut fixture = Chronograph::default();
+		fixture.start();
+		let recent = fixture.pivot.unwrap();
+
+		fixture.restart();
+		let current = fixture.pivot.unwrap();
+		assert_eq!(current - recent, Duration::from_secs(1));
+	}
+
+	#[serial]
+	#[test]
+	fn reset() {
+		let mut fixture = Chronograph::default();
+		fixture.start();
+		assert!(fixture.pivot.is_some());
+
+		fixture.stop();
+		assert_eq!(fixture.accumulator, Duration::from_secs(1));
+
+		fixture.start();
+		assert!(fixture.pivot.is_some());
+
+		fixture.reset();
+		assert!(fixture.pivot.is_none());
+		assert_eq!(fixture.accumulator, Duration::from_secs(0));
+
+		fixture.start();
+		assert!(fixture.pivot.is_some());
+
+		fixture.stop();
+		assert_eq!(fixture.accumulator, Duration::from_secs(1));
+
+		fixture.reset();
+		assert!(fixture.pivot.is_none());
+		assert_eq!(fixture.accumulator, Duration::from_secs(0));
+	}
+
+	#[test]
+	fn elapsed() {
+		let mut fixture = Chronograph::default();
+		fixture.start();
+		fixture.stop();
+
+		fixture.start();
+		assert_eq!(fixture.elapsed(), Duration::from_secs(2));
 	}
 }
