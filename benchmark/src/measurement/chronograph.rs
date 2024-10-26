@@ -1,14 +1,14 @@
 #[cfg(test)]
-mod mock_instant {
+pub(super) mod mock_instant {
 	use std::ops::DerefMut;
 	use std::sync::{LazyLock, Mutex};
 	use std::time::{Duration, Instant};
 
-	pub(crate) static MOCK_INSTANT: LazyLock<Mutex<Instant>> =
+	pub static MOCK_INSTANT: LazyLock<Mutex<Instant>> =
 		LazyLock::new(|| Mutex::new(Instant::now()));
-	pub(crate) static MOCK_DURATION: LazyLock<Duration> = LazyLock::new(|| Duration::from_secs(1));
+	pub static MOCK_DURATION: LazyLock<Duration> = LazyLock::new(|| Duration::from_secs(1));
 
-	pub(crate) fn now() -> Instant {
+	pub fn now() -> Instant {
 		let mut guard = MOCK_INSTANT.lock().unwrap();
 		*(guard.deref_mut()) += *MOCK_DURATION;
 		dbg!(*guard);
@@ -16,11 +16,11 @@ mod mock_instant {
 	}
 }
 
-mod instant {
+pub(super) mod instant {
 	use std::time::Instant;
 
 	#[allow(dead_code)]
-	pub(crate) fn now() -> Instant {
+	pub fn now() -> Instant {
 		Instant::now()
 	}
 }
