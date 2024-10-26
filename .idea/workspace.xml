@@ -7,21 +7,7 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="01e52544-3eb0-4f90-9812-210acd287660" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/benchmark/src/measurement.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/benchmark/src/measurement/local_time_stamper.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/benchmark/src/measurement/time_stamper.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/index_access_performance_survey.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/index_access_performance_survey.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benchmark/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/benchmark/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benchmark/src/chronograph.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benchmark/src/measurement/chronograph.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benchmark/src/chronograph_status.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benchmark/src/measurement/chronograph_status.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benchmark/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benchmark/src/lib.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benchmark/src/result_writer.rs" beforeDir="false" afterPath="$PROJECT_DIR$/benchmark/src/result_writer.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/playground/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/playground/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/playground/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/playground/src/main.rs" afterDir="false" />
-    </list>
+    <list default="true" id="01e52544-3eb0-4f90-9812-210acd287660" name="Changes" comment="Refactor measurement module and clean up .idea config&#10;&#10;Moved various measurement-related functionalities to the new `benchmark/src/measurement` module for better organization. Deleted the redundant `.idea/.gitignore` file and updated IntelliJ IDEA's `workspace.xml` configuration accordingly. Added `chrono` as a dependency for handling timestamps in the benchmarking code." />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -79,6 +65,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "org.rust.cargo.project.model.PROJECT_DISCOVERY": "true",
+    "org.rust.cargo.project.model.impl.CargoExternalSystemProjectAware.subscribe.first.balloon": "",
     "org.rust.first.attach.projects": "true",
     "settings.editor.selected.configurable": "actions.on.save",
     "vue.rearranger.settings.migration": "true"
@@ -161,11 +148,28 @@
       <option name="presentableId" value="Default" />
       <updated>1727580274784</updated>
       <workItem from="1729927598070" duration="72000" />
-      <workItem from="1729928236311" duration="3116000" />
+      <workItem from="1729928236311" duration="3312000" />
     </task>
-    <servers />
+    <task id="LOCAL-00001" summary="Refactor measurement module and clean up .idea config&#10;&#10;Moved various measurement-related functionalities to the new `benchmark/src/measurement` module for better organization. Deleted the redundant `.idea/.gitignore` file and updated IntelliJ IDEA's `workspace.xml` configuration accordingly. Added `chrono` as a dependency for handling timestamps in the benchmarking code.">
+      <option name="closed" value="true" />
+      <created>1729932918439</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1729932918439</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers>
+      <YouTrack url="https://tokeiya3.youtrack.cloud">
+        <username>tokeiya</username>
+      </YouTrack>
+    </servers>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Refactor measurement module and clean up .idea config&#10;&#10;Moved various measurement-related functionalities to the new `benchmark/src/measurement` module for better organization. Deleted the redundant `.idea/.gitignore` file and updated IntelliJ IDEA's `workspace.xml` configuration accordingly. Added `chrono` as a dependency for handling timestamps in the benchmarking code." />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor measurement module and clean up .idea config&#10;&#10;Moved various measurement-related functionalities to the new `benchmark/src/measurement` module for better organization. Deleted the redundant `.idea/.gitignore` file and updated IntelliJ IDEA's `workspace.xml` configuration accordingly. Added `chrono` as a dependency for handling timestamps in the benchmarking code." />
   </component>
 </project>
